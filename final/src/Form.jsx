@@ -2,18 +2,38 @@ import { useState } from "react";
 import List from "./List";
 import Alert from "./Alert";
 
+
 const Form = () => {
   const [list, setList] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [editID, setEditID] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
   const [name, setName] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleAlert(true, 'success', 'item added to list');
-    const newItem = { id: list.length + 1, title: name };
-    setList([...list, newItem]);
-    setName("");
+    if (!name) {
+      handleAlert(true, "danger", "please input an item");
+    } else if (name && editing) {
+      setList(
+        list.map((item) => {
+          if (item.id === editID) {
+            return { ...item, title: name };
+          }
+          return item;
+        })
+      );
+      setName("");
+      setEditID(null);
+      setEditing(false);
+      handleAlert(true, "success", "item changed");
+    } else {
+      handleAlert(true, "success", "item added to list");
+      const newItem = { id: list.length + 1, title: name };
+      setList([...list, newItem]);
+      setName("");
+      setEditing(false);
+    }
   };
 
   const handleAlert = (show = false, type = "", message = "") => {
@@ -25,13 +45,18 @@ const Form = () => {
     setList([]);
   };
 
-  
+  const handleEdit = (id) => {
+    const edit = list.find((item) => item.id === id);
+    setEditing(true);
+    setEditID(id);
+    setName(edit.title);
+  };
+
   const handleRemoval = (id) => {
     handleAlert(true, "danger", "item removed");
     const newList = list.filter((item) => item.id !== id);
     setList(newList);
   };
-
 
   return (
     <>
@@ -41,7 +66,6 @@ const Form = () => {
             type={alert.type}
             message={alert.message}
             removeAlert={handleAlert}
-            list={list}
           />
         )}
         <h3>grocery bud</h3>
@@ -60,8 +84,14 @@ const Form = () => {
       </form>
       {list.length > 0 && (
         <div className="grocery-container">
-          <List list={list} handleRemoval={handleRemoval}/>
-          <button className="clear-btn" onClick={handleClear}>clear items</button>
+          <List
+            list={list}
+            handleRemoval={handleRemoval}
+            handleEdit={handleEdit}
+          />
+          <button className="clear-btn" onClick={handleClear}>
+            clear items
+          </button>
         </div>
       )}
     </>
