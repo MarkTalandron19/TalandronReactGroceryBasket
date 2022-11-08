@@ -16,7 +16,11 @@ const List = ({ list, handleRemoval, handleEdit }) => {
               >
                 <FaEdit />
               </button>
-              <button className="delete-btn" onClick={() => handleRemoval(id)}>
+              <button
+                type="button"
+                className="delete-btn"
+                onClick={() => handleRemoval(id)}
+              >
                 <FaTrash />
               </button>
             </div>
