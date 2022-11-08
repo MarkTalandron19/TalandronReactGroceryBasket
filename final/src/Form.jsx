@@ -20,6 +20,19 @@ const Form = () => {
     setAlert({ show, type, message });
   };
 
+  const handleClear = () => {
+    handleAlert(true, "danger", "empty list");
+    setList([]);
+  };
+
+  
+  const handleRemoval = (id) => {
+    handleAlert(true, "danger", "item removed");
+    const newList = list.filter((item) => item.id !== id);
+    setList(newList);
+  };
+
+
   return (
     <>
       <form action="" className="grocery-form" onSubmit={handleSubmit}>
@@ -28,6 +41,7 @@ const Form = () => {
             type={alert.type}
             message={alert.message}
             removeAlert={handleAlert}
+            list={list}
           />
         )}
         <h3>grocery bud</h3>
@@ -36,6 +50,7 @@ const Form = () => {
             type="text"
             className="grocery"
             placeholder="e.g. eggs"
+            value={name}
             onChange={(text) => setName(text.target.value)}
           />
           <button type="submit" className="submit-btn" onSubmit={handleSubmit}>
@@ -45,8 +60,8 @@ const Form = () => {
       </form>
       {list.length > 0 && (
         <div className="grocery-container">
-          <List list={list} />
-          <button className="clear-btn">clear items</button>
+          <List list={list} handleRemoval={handleRemoval}/>
+          <button className="clear-btn" onClick={handleClear}>clear items</button>
         </div>
       )}
     </>
