@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import List from "./List";
 import Alert from "./Alert";
 
+const fetchList = () => {
+  let currentList = localStorage.getItem("list");
+  if (currentList) {
+    return (currentList = JSON.parse(localStorage.getItem("list")));
+  } else {
+    return [];
+  }
+};
 
 const Form = () => {
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(fetchList());
   const [editing, setEditing] = useState(false);
   const [editID, setEditID] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
@@ -57,6 +65,10 @@ const Form = () => {
     const newList = list.filter((item) => item.id !== id);
     setList(newList);
   };
+
+  useEffect(() => {
+    localStorage.setItem("list", JSON.stringify(list));
+  }, [list]);
 
   return (
     <>
