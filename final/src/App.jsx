@@ -1,8 +1,12 @@
+import Form from "./Form";
+
 function App() {
 
   return (
-    <h3>Grocery Bud Setup</h3>
+    <section className="section-center">
+      <Form />
+    </section>
   )
 }
 
-export default App
+export default App;
